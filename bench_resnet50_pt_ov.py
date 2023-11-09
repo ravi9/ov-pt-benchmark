@@ -93,8 +93,8 @@ def benchmark_ov(image, precision):
     print(f'OpenVINO Average inference time with {precision}: {np.mean(inf_time_arr):.2f} seconds')
     return inf_time_arr
 
-def calculate_statistics(times):
-    return np.sum(times), np.median(times), np.mean(times), np.std(times), np.min(times), np.max(times), 1 / np.mean(times)
+def calculate_statistics(times, num_iterations ):
+    return np.sum(times), np.median(times), np.mean(times), np.std(times), np.min(times), np.max(times), num_iterations / np.mean(times)
 
 def print_statistics(metric, values):
     print("{},{:.2f},{:.2f},{:.2f},{:.2f},{:.2f},{:.2f},{:.2f}".format(metric, *values))
@@ -134,7 +134,7 @@ if __name__ == '__main__':
                 "ov_bf16": ov_bf16_times
                 }
 
-  stats_dict = {key: calculate_statistics(times) for key, times in times_dict.items()}
+  stats_dict = {key: calculate_statistics(times, num_iterations) for key, times in times_dict.items()}
 
   print(f"\nImage size: {image.shape}")
   print("\nFwk,total_time,median,avg,std_dev,min,max,fps")
@@ -149,7 +149,7 @@ if __name__ == '__main__':
 #   std_dev = [np.std(pt_fp32_times), np.std(pt_ts_fp32_times),np.std(pt_bf16_times), np.std(ov_fp32_times), np.std(ov_bf16_times)]
 #   min_time = [np.min(pt_fp32_times), np.min(pt_ts_fp32_times),np.min(pt_bf16_times), np.min(ov_fp32_times), np.min(ov_bf16_times)]
 #   max_time = [np.max(pt_fp32_times), np.max(pt_ts_fp32_times),np.max(pt_bf16_times), np.max(ov_fp32_times), np.max(ov_bf16_times)]
-#   fps = [ 1 / np.mean(pt_fp32_times), 1 / np.mean(pt_ts_fp32_times), 1 / np.mean(pt_bf16_times), 1 / np.mean(ov_fp32_times), 1 / np.mean(ov_bf16_times)]
+#   fps = [ num_iterations / np.mean(pt_fp32_times), num_iterations / np.mean(pt_ts_fp32_times), num_iterations / np.mean(pt_bf16_times), num_iterations / np.mean(ov_fp32_times), num_iterations / np.mean(ov_bf16_times)]
 
 #   print(f"\nImage size: {image.shape}")
 #   print("\nmetric,pt_fp32,pt_ts_fp32,pt_bf16,ov_fp32,ov_bf16")
